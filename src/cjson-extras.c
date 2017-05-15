@@ -86,6 +86,43 @@ cJSON * cJSON_Parse_File(const char *file_name, int *err)
     return json;
 }
 
+/* Wrapper for cJSON_Print() to be used when JSON is needed to be written to a file */
+int cJSON_Print_To_File(const cJSON *item, const char *file_name)
+{
+    int ret_value = -1;
+    char *cp;
+    size_t str_len;
+    FILE *fout;
+    
+    fout = fopen(file_name, "w");
+    if (NULL == fout) 
+    {
+        return ret_value;
+    }
+    
+    cp = cJSON_Print(item);
+    
+    if (NULL != cp) 
+    {
+        str_len = strlen(cp);
+        if (fwrite(cp, sizeof(unsigned char), str_len, fout) == str_len)
+        {
+            ret_value = 0;
+        }
+	free(cp);
+	// we don't have access to global_hooks()
+	// Caller must assure that malloc/free are used, otherwise we will crash! 
+        //global_hooks.deallocate(cp);
+    }
+       
+    fclose(fout);
+    
+    return ret_value;
+}
+
+
+
+
 unsigned long get_file_size(const char *file_name)
 {
     unsigned long file_size = 0;
