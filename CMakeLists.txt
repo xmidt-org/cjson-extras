@@ -29,7 +29,7 @@ set(LIBRARY_DIR ${INSTALL_DIR}/lib${LIB_SUFFIX})
 
 include_directories(${INCLUDE_DIR})
 
-include_directories (SYSTEM /usr/include)
+include_directories (SYSTEM /usr/include ${INCLUDE_DIR}/cjson)
 link_directories ( ${LIBRARY_DIR})
                    
 if (MAIN_PROJ_BUILD) 

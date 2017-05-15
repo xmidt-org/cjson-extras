@@ -27,6 +27,8 @@ target_link_libraries (simple)
 target_link_libraries (simple gcov)
 target_link_libraries (simple cunit)
 target_link_libraries (simple rt)
+target_link_libraries (simple cjson)
+
 
 add_custom_target(coverage
                   COMMAND lcov -q --capture --directory ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/simple.dir/__/src --output-file coverage.info
