@@ -27,14 +27,13 @@ set(PREFIX_DIR ${CMAKE_CURRENT_BINARY_DIR}/_prefix)
 set(INCLUDE_DIR ${INSTALL_DIR}/include)
 set(LIBRARY_DIR ${INSTALL_DIR}/lib${LIB_SUFFIX})
 
-include_directories(${INCLUDE_DIR}
+include_directories(${INCLUDE_DIR})
 
 include_directories (SYSTEM /usr/include)
 link_directories ( ${LIBRARY_DIR})
                    
 if (MAIN_PROJ_BUILD) 
-include_directories(
-                    ${MAIN_PROJ_INCLUDE_PATH}
+include_directories( ${MAIN_PROJ_INCLUDE_PATH} )
 link_directories ( ${LIBRARY_DIR} ${MAIN_PROJ_LIB_PATH})                    
 endif ()                    
 
