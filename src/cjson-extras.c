@@ -107,6 +107,7 @@ int cJSON_Print_To_File(const cJSON *item, const char *file_name)
         str_len = strlen(cp);
         if (fwrite(cp, sizeof(unsigned char), str_len, fout) == str_len)
         {
+	    fwrite("\n", sizeof(unsigned char), strlen("\n"), fout);
             ret_value = 0;
         }
 	free(cp);
