@@ -27,8 +27,8 @@
 /*----------------------------------------------------------------------------*/
 /*                                   Macros                                   */
 /*----------------------------------------------------------------------------*/
-#define VALID_JSON_FILE "./valid.json"
-#define INVALID_JSON_FILE "./invalid.json"
+#define VALID_JSON_FILE "../../tests/valid.json"
+#define INVALID_JSON_FILE "../../tests/invalid.json"
 #define NONEXISTENT_FILE "./not_there.json"
 #define PRINTED_TEST_FILE "./printed_valid_json.txt"
 
@@ -105,7 +105,8 @@ cleanup:
         fclose(file);
     }
     
-    printf("file_read(%s) content is %s\n", filename, content ? "VALID" : "NULL");
+    /* printf("file_read(%s) content is %s\n", filename, content ? "VALID" : "NULL"); */
+
     return content;
 }
 
