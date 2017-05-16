@@ -20,12 +20,17 @@
 #include <unistd.h>
 #include <signal.h>
 #include <time.h>
+#include <cJSON.h>
+#include "../src/cjson-extras.h"
 #include <CUnit/Basic.h>
 
 /*----------------------------------------------------------------------------*/
 /*                                   Macros                                   */
 /*----------------------------------------------------------------------------*/
-/* none */
+#define VALID_JSON_FILE "./valid.json"
+#define INVALID_JSON_FILE "./invalid.json"
+#define NONEXISTENT_FILE "./not_there.json"
+#define PRINTED_TEST_FILE "./printed_valid_json.txt"
 
 /*----------------------------------------------------------------------------*/
 /*                               Data Structures                              */
@@ -46,10 +51,108 @@
 /*                             Internal functions                             */
 /*----------------------------------------------------------------------------*/
 
+/* from cJSON (https://github.com/DaveGamble/cJSON.git) test directory */
+char* read_file(const char *filename)
+{
+    FILE *file = NULL;
+    long length = 0;
+    char *content = NULL;
+    size_t read_chars = 0;
+
+    /* open in read binary mode */
+    file = fopen(filename, "rb");
+    if (file == NULL)
+    {
+        goto cleanup;
+    }
+
+    /* get the length */
+    if (fseek(file, 0, SEEK_END) != 0)
+    {
+        goto cleanup;
+    }
+    length = ftell(file);
+    if (length < 0)
+    {
+        goto cleanup;
+    }
+    if (fseek(file, 0, SEEK_SET) != 0)
+    {
+        goto cleanup;
+    }
+
+    /* allocate content buffer */
+    content = (char*)malloc((size_t)length + sizeof(""));
+    if (content == NULL)
+    {
+        goto cleanup;
+    }
+
+    /* read the file into memory */
+    read_chars = fread(content, sizeof(char), (size_t)length, file);
+    if ((long)read_chars != length)
+    {
+        free(content);
+        content = NULL;
+        goto cleanup;
+    }
+    content[read_chars] = '\0';
+
+
+cleanup:
+    if (file != NULL)
+    {
+        fclose(file);
+    }
+    
+    printf("file_read(%s) content is %s\n", filename, content ? "VALID" : "NULL");
+    return content;
+}
+
+static cJSON *parse_file(const char *filename)
+{
+    cJSON *parsed = NULL;
+    char *content = read_file(filename);
+
+    parsed = cJSON_Parse(content);
+
+    if (content != NULL)
+    {
+        free(content);
+    }
+
+    return parsed;
+}
+
 
 void test_all( void )
 {
-  /* STUB */ 
+  cJSON *parsed;
+
+  parsed = parse_file(VALID_JSON_FILE);
+
+  CU_ASSERT(NULL != parsed);
+
+  if (parsed) {
+	  CU_ASSERT (0 == cJSON_Print_To_File(parsed, PRINTED_TEST_FILE));
+	  cJSON_Delete(parsed);
+  }
+
+  parsed = parse_file(INVALID_JSON_FILE);
+
+  CU_ASSERT(NULL == parsed);
+
+  if (parsed) {
+	  cJSON_Delete(parsed);
+  }
+
+  parsed = parse_file(NONEXISTENT_FILE);
+
+  CU_ASSERT(NULL == parsed);
+
+  if (parsed) {
+	  cJSON_Delete(parsed);
+  }
 }
 
 
